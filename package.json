@@ -1,0 +1,14 @@
+{
+    "name": "jira-helper",
+    "version": "1.0.1",
+    "type": "module",
+    "dependencies": {
+        "commander": "^9.2.0",
+        "dotenv": "^16.0.1",
+        "node-fetch": "^3.2.4",
+        "prompt-confirm": "^2.0.4"
+    },
+    "bin": {
+        "jira-helper": "cli.js"
+    }
+}
