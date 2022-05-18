@@ -16,8 +16,14 @@ program
 .command('clone-issue')
 .description('Clone the given issue id')
 .argument('<issueId>', 'issue id to clone')
-.action(async(issueId) => {
-    const createdIssue = await cloneIssue(issueId)
+.option('--description <char>', 'this will be set as the description for the new issue')
+.action(async(issueId, option) => {
+    if(option.description) {
+        console.log(`Created issue description will be set to: ${option.description}`)
+    }
+    const createdIssue = await cloneIssue(issueId, {
+        description: option.description
+    })
     console.log(createdIssue)
 })
 

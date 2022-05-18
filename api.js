@@ -96,10 +96,14 @@ export async function createIssue({ summary, description, project, reporter, ass
     }
 }
 
-export async function cloneIssue(issueId) {
+export async function cloneIssue(issueId, overrideFields) {
     try {
         const existingIssue = await getIssueDetails(issueId)
-        const createdIssue = await createIssue(extractIssueDetails(existingIssue))
+        const newIssueData = extractIssueDetails(existingIssue)
+        if('description' in overrideFields && overrideFields.description) {
+            newIssueData.description = convertPlainTextToAtlassianDocumentFormat(overrideFields.description)
+        }
+        const createdIssue = await createIssue(newIssueData)
         return createdIssue
     } catch(e) {
         return e.message
