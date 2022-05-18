@@ -105,3 +105,57 @@ export async function cloneIssue(issueId) {
         return e.message
     }
 }
+
+export async function updateIssue(issueId, fieldsForUpdate) {
+    const requestBody = {
+        fields: fieldsForUpdate
+    }
+
+    // to check if issue exists - will stop executing here by throwing error if not
+    await getIssueDetails(issueId)
+
+    const response = await fetch(`${API_URL}/issue/${issueId}`, {
+        method: 'PUT',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    })
+
+    if(response.status === 204) {
+        return `Issue updated: ${DOMAIN}/browse/${issueId}`
+    } else {
+        console.log(response.status, response.statusText)
+        return await response.text()
+    }
+}
+
+export function convertPlainTextToAtlassianDocumentFormat(text) {
+    return {
+        version: 1,
+        type: 'doc',
+        content: [
+            {
+                'type': 'paragraph',
+                'content': [
+                    {
+                        type: 'text',
+                        text: text
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+export async function updateIssueDescription(issueId, description) {
+    try {
+        const updatedIssue = await updateIssue(issueId, {
+            description: convertPlainTextToAtlassianDocumentFormat(description)
+        })
+        return updatedIssue
+    } catch(e) {
+        return e.message
+    }
+}
