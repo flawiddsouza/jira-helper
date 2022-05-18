@@ -3,7 +3,7 @@
 import 'dotenv/config'
 import './validate-env.js'
 import { Command } from 'commander'
-import { cloneIssue, updateIssueDescription } from './api.js'
+import { cloneIssue, updateIssueDescription, deleteIssue } from './api.js'
 
 const program = new Command()
 
@@ -35,6 +35,15 @@ program
 .action(async(issueId, description) => {
     const updatedIssue = await updateIssueDescription(issueId, description)
     console.log(updatedIssue)
+})
+
+program
+.command('delete-issue')
+.description('Delete the given issue id')
+.argument('<issueId>', 'issue id to delete')
+.action(async(issueId) => {
+    const deletedIssue = await deleteIssue(issueId)
+    console.log(deletedIssue)
 })
 
 program.parse()

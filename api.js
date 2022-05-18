@@ -163,3 +163,32 @@ export async function updateIssueDescription(issueId, description) {
         return e.message
     }
 }
+
+export async function deleteIssue(issueId) {
+    try {
+        // to check if issue exists - will stop executing here by throwing error if not
+        const issueDetails = await getIssueDetails(issueId)
+
+        console.log(`Deleting issue: ${issueDetails.fields.summary}`)
+
+        if(await confirm('Are you sure you want to continue?') === false) {
+            process.exit()
+        }
+
+        const response = await fetch(`${API_URL}/issue/${issueId}`, {
+            method: 'DELETE',
+            headers: {
+                ...headers
+            }
+        })
+
+        if(response.status === 204) {
+            return `Issue deleted: ${DOMAIN}/browse/${issueId}`
+        } else {
+            console.log(response.status, response.statusText)
+            return await response.text()
+        }
+    } catch(e) {
+        return e.message
+    }
+}
